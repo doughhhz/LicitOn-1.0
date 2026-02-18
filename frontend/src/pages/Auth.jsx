@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import api from '../services/api';
+import toast from 'react-hot-toast';
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -14,14 +15,17 @@ const Auth = () => {
 
   const handleCadastro = async (e) => {
     e.preventDefault();
+    const carregarToast = toast.loading('Criando sua conta...');
+    
     try {
-      await api.post('/usuarios', formData);
-      alert('Usuário cadastrado com sucesso!');
-      setIsLogin(true);
+        await api.post('/usuarios', formData);
+        toast.success('Conta criada com sucesso! Bem-vindo.', { id: carregarToast });
+        setIsLogin(true);
     } catch (error) {
-      alert('Erro ao cadastrar: ' + error.response.data.message);
+        const msg = error.response?.data?.message || "Erro ao conectar com o servidor";
+        toast.error(msg, { id: carregarToast });
     }
-  };
+    };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
